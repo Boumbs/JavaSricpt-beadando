@@ -9,19 +9,20 @@ const gameData = {
     maxtalalat: 0,
     maxlepes: 0,
     endGame: false,
-    listOfBoatLength: []
+    listOfBoatLength: [],
+    talalatszam: 0,
+    lepesszam: 0
 }
 
 
 //BENJÁMIN/Zsombor
 /////////////////////////////////////////////////////////////////////////////////////
-// Itt van az a lista, amelyen próbálkoztam, de a későbbiekben egy másik függvény csinálja ezt
 function generateBoatLength(rowSize, colSize) {
     let NumOfCells = rowSize * colSize
     let listOfBoatLength = []
     if (NumOfCells >= 36) {
         let sum = 0
-        console.log("hej")
+        
         
         while (sum < (NumOfCells * 0.17)) {
             let number = random(4) + 2
@@ -72,8 +73,8 @@ function ArrayIsInArrayArray(arrayOriginal, arrTest) {
 }
 
 
-// Ez egy értelmetlen függvény: fog egy listák listáját és minden egyes listáját belerakja egy eredeti listába 
-// A végeredmény egy listák listája (ezt meglehtne oldani valahogy elegánsabban de nem sikerült)
+// A függvény fog egy listák listáját és minden egyes listáját belerakja egy eredeti listába 
+// A végeredmény egy listák listája
 function BelePussolo(arrTemporary, arrOriginal) {
     for (i of arrTemporary) {
         arrOriginal.push(i)
@@ -81,7 +82,7 @@ function BelePussolo(arrTemporary, arrOriginal) {
 }
 
 
-// Ez egy i hosszúságú kezdő indexpárú és végső indexpárű hajót tölt fel
+// Ez egy i hosszúságú kezdő indexpárú és végső indexpárú hajót tölt fel
 //tehát a kezdő négyzettől a végső négyzetig feltölti a cellákat
 function generateShipFromStartAndEnd(boatLength, startOfShipRow, startOfShipCol, endOfShipRow, endOfShipCol) {
     let boat = []
@@ -123,7 +124,6 @@ function generateShipFromStartAndEnd(boatLength, startOfShipRow, startOfShipCol,
 //Itt pl az order eredeti hajó listát paraméterként fogja kapni a függvény és a 9-es számokat is paraméterül fogja kapni,
 // a tábla méretétől függően
 // relatíve sok a ciklus, ezen lehetne javítani, de ez így eddig nem rossz kiindulás
-// Az összes console.log()-ot ki lehet szedni, a debuggolas miatt volt bent
 
 function generateBoat() {
     // a végső hajó lista
@@ -140,10 +140,10 @@ function generateBoat() {
         let direction
         // Ameddig nincs megfelelő kezdő és vég indexpár addig folytatom a ciklust
         while (stepIn) {
-            startOfShipRow = random(10)
-            console.log(startOfShipRow)
-            startOfShipCol = random(10)
-            console.log(startOfShipCol)
+            startOfShipRow = random(gameData.nrows)
+            
+            startOfShipCol = random(gameData.ncols)
+            
             // itt az irányt randomizálom, ez is segíti, hogy randomabb legyen az if-ek meghívása
             direction = random(2)
             if (direction == 0) {
@@ -177,10 +177,10 @@ function generateBoat() {
                 }
             }
         }
-        console.log(startOfShipRow, startOfShipCol, endOfShipRow, endOfShipCol)
+        
         // létrehozom a kezdő és végcella közötti cellákat, a hajók hosszának megfelelően
         temporaryBoat = generateShipFromStartAndEnd(gameData.listOfBoatLength[i], startOfShipRow, startOfShipCol, endOfShipRow, endOfShipCol)
-        console.log(temporaryBoat)
+        
         // itt azt vizsgálom, hogy az ideiglenes hajóm valakivel közös cellát foglal-e
         // Ha nem, akkor belerakom a végső listámba
         // Ha igen, akkor az egész for ciklust ujra futtatom, erre a hosszúságú hajóra
@@ -190,8 +190,7 @@ function generateBoat() {
         }
         else {
             BelePussolo(temporaryBoat, boats)
-            console.log(boats)
-            console.log("hej")
+            
         }
     }
     return boats
@@ -234,7 +233,7 @@ function newElem(element, parent) {
     return e
 }
 
-//Kinézet!!
+
 //kirajzol egy megadott méretű táblázatot az oldalra, aminek a cellái üresek (vagy például a kékek, mint a víz)
 function generateGameArea(matrix) {
 
@@ -264,7 +263,7 @@ function getCell(row, col) {
 
 
 function rajzol(x, y, talalt) {
-    console.log(getCell(x, y))
+    
     if (talalt) {
         getCell(x, y).innerText = '💥'
     }
@@ -283,24 +282,45 @@ function talalatSzamlaloIr(szam) {
     talalat.innerText = szam
 }
 
-//nem kinézet!!
-
+// eltárol egy kapott indexpárt egy listába.
 function indexTarol(row, col) {
     gameData.indexPairs.push({ row: row, col: col })
 }
 
+
+function tipp(guessRow, guessCol) {
+    if (!gameData.endGame) {
+        if (indexparListabanE(guessRow, guessCol)) {
+            return "Ezt már tippelted"
+        }
+        else {
+            indexTarol(guessRow, guessCol)
+            let talalt = hitOrNot(gameData.matrix, guessRow, guessCol)
+            
+            rajzol(guessRow, guessCol, talalt)
+            if (talalt) {
+                
+                talalatSzamlaloIr(gyozelemCheck())
+                //lepesSzamlaloIr(veresegCheck())
+                console.log("Eltaláltál egy hajót.")
+            }
+            else {
+                lepesSzamlaloIr(veresegCheck())
+                console.log("Nem talált.")
+            }
+
+        }
+
+    }
+}
+
+
+
+
 //Virág
-
-// eltárol egy kapott indexpárt egy listába.
-
-/* function IndexparTarol(x, y) { //kövi lövések eltárolása
-    lovesek[lovesek.length - 1] = { xtengely: x, ytengely: y }
-    return lovesek
-} */
-
 // megmondja, hogy egy kapott indexpár benne van-e egy listában.
 
-function indexparListabanE(x, y) { //nem értem itt mit nézünk
+function indexparListabanE(x, y) {
     let eredmeny = false
     for (const loves of gameData.indexPairs) {
         if (loves.row == x && loves.col == y) {
@@ -316,39 +336,88 @@ function indexparListabanE(x, y) { //nem értem itt mit nézünk
 
 // növel egy lépésszámlálót, és ha az egy megadott értékhez ér, kiír egy üzenetet, hogy vége a játéknak (vereség)
 
-
-
-function veresegCheck() {
-    lepesszam += 1
-    console.log("Nem sikerült eltalálnod a hajót")
-    if (lepesszam == maxlepes) {
-        console.log("A játéknak vége.")
-        gameData.endGame = true
-        return lepesszam
-    }
-    return lepesszam
+function lepesSzamlalo(){
+    gameData.lepesszam++
 }
+function veresegCheck() {
+    lepesSzamlalo()
+    if (gameData.lepesszam == gameData.maxlepes) {
+        console.log("A játéknak vége.")
+        alert("Sajnos elérted a max tippelési lehetőséget, így vesztettél, StartGame() függvény segítségével újrakezdheted a játékot")
+        gameData.endGame = true
+        
+    }
+    return gameData.lepesszam
+}
+
 
 // növel egy találatszámlálót, és ha az elért egy megadott értéket, kiír egy üzenetet, hogy vége a játéknak (győzelem)
 
-
-
-function gyozelemCheck() { //minden új tippel nő a lépésszámláló
-    talalatszam += 1
-    console.log("Ügyes vagy, a világ legfosabb játékában eltalál egy hajót")
-    if (talalatszam == maxtalalat) {
+function talalatSzamlalo(){
+    gameData.talalatszam++
+}
+function gyozelemCheck() {
+    talalatSzamlalo()
+    if ( gameData.talalatszam == gameData.maxtalalat) {
         console.log("A játéknak vége. Győzelem!")
+        alert("Győztél, a játéknak vége! StartGame() paranccsal újrakezdheted")
         gameData.endGame = true
-        return talalatszam
+        
     }
-    return talalatszam
+    return  gameData.talalatszam
 }
 
+//kirajzolgatom a szamlalokat
+function SzamlalokKiiras(){
+    const talalinfo = document.createElement('div')
+    talalinfo.innerText = "Találatok:"
+    gameArea.appendChild(talalinfo)
+    talalinfo.style.fontFamily = "'Courier New', Courier, monospace"
+    const talalat = document.createElement('div')
+    gameArea.appendChild(talalat)
+    talalat.classList.add('talal')
+    talalat.innerText = 0
+    talalat.style.border = "1px solid black"
+    talalat.style.width = "80px"
+    talalat.style.height = "50px"
+    talalat.style.textAlign = "center"
+    talalat.style.fontSize = "45px"
+    talalat.style.fontFamily = "'Courier New', Courier, monospace"
+    const lepesinfo = document.createElement('div')
+    lepesinfo.innerText = "Lépések:"
+    gameArea.appendChild(lepesinfo)
+    lepesinfo.style.fontFamily = "'Courier New', Courier, monospace"
+    const lepesek = document.createElement('div')
+    gameArea.appendChild(lepesek)
+    lepesek.classList.add('lep')
+    lepesek.innerText = 0
+    lepesek.style.border = "1px solid black"
+    lepesek.style.width = "80px"
+    lepesek.style.height = "50px"
+    lepesek.style.textAlign = "center"
+    lepesek.style.fontSize = "45px"
+    lepesek.style.fontFamily = "'Courier New', Courier, monospace"
+}
 
+function lepesSzamlaloIr(szam) {
+    const lepesek = gameArea.querySelector(`.lep`)
+    lepesek.innerText = szam
+}
 
+function talalatSzamlaloIr(szam) {
+    const talalat = gameArea.querySelector(`.talal`)
+    talalat.innerText = szam
+}
 
+function resetGame() {
+    gameArea.innerHTML=''
+    gameData.endGame = false
+    gameData.lepesszam = 0
+    gameData.talalatszam = 0
+}
 
 function startGame(nrows, ncols, maxSteps) {
+    resetGame()
     //itt kene majd a bemenet eventlistenerrel
     gameData.nrows = nrows
     gameData.ncols = ncols
@@ -358,27 +427,6 @@ function startGame(nrows, ncols, maxSteps) {
     
     gameData.matrix = generateMatrix(gameData.boats, nrows, ncols)
     generateGameArea(gameData.matrix)
+    SzamlalokKiiras()
 
-}
-function tipp(guessRow, guessCol) {
-    if (!gameData.endGame) {
-        if (indexparListabanE(guessRow, guessCol)) {
-            return "Ezt már tippelted gyökér"
-        }
-        else {
-            indexTarol(guessRow, guessCol)
-            let talalt = hitOrNot(gameData.matrix, guessRow, guessCol)
-            console.log(guessCol)
-            rajzol(guessRow, guessCol, talalt)
-            if (talalt) {
-                rajzol(guessRow, guessCol, talalt)
-                talalatSzamlaloIr(gyozelemCheck())
-            }
-            else {
-                lepesSzamlaloIr(veresegCheck())
-            }
-
-        }
-
-    }
 }
