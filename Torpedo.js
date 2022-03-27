@@ -8,14 +8,42 @@ const gameData = {
     indexPairs: [],
     maxtalalat: 0,
     maxlepes: 0,
-    endGame: false
+    endGame: false,
+    listOfBoatLength: []
 }
 
 
 //BENJÁMIN/Zsombor
 /////////////////////////////////////////////////////////////////////////////////////
 // Itt van az a lista, amelyen próbálkoztam, de a későbbiekben egy másik függvény csinálja ezt
-const order = [5, 4, 3, 3, 2]
+function generateBoatLength(rowSize, colSize) {
+    let NumOfCells = rowSize * colSize
+    let listOfBoatLength = []
+    if (NumOfCells >= 36) {
+        let sum = 0
+        console.log("hej")
+        
+        while (sum < (NumOfCells * 0.17)) {
+            let number = random(4) + 2
+            sum = sum + number
+            listOfBoatLength.push(number)
+        }
+        listOfBoatLength.sort()
+        listOfBoatLength.reverse()
+    }
+    if (NumOfCells < 36 && NumOfCells >= 16) {
+        listOfBoatLength = [2, 2]
+
+    }
+    if (NumOfCells < 16 && NumOfCells >= 8) {
+        listOfBoatLength = [1, 1]
+    }
+    if (NumOfCells < 8) {
+        listOfBoatLength = [1]
+    }
+    
+    return listOfBoatLength
+}
 
 // random függvény
 function random(max) {
@@ -101,7 +129,7 @@ function generateBoat() {
     // a végső hajó lista
     let boats = []
     // az order a legelején definiált gakorló listám
-    for (let i = 0; i < order.length; i++) {
+    for (let i = 0; i < gameData.listOfBoatLength.length; i++) {
         // a változókat létrehozom
         let temporaryBoat
         let stepIn = true
@@ -121,28 +149,28 @@ function generateBoat() {
             if (direction == 0) {
                 // Minden egyes if-nél megvizsgálom, hogy melyik irányban lehet az adott hajót lerakni
                 // Ha le lehet, akkor a végső cellát lerakom, majd kilépek, és a while ciklusbol is kiléptetem magam
-                if (9 - startOfShipCol > order[i]) {
-                    endOfShipCol = startOfShipCol + order[i]
+                if ((gameData.ncols - 1) - startOfShipCol > gameData.listOfBoatLength[i]) {
+                    endOfShipCol = startOfShipCol + gameData.listOfBoatLength[i]
                     endOfShipRow = startOfShipRow
                     stepIn = false
                     break
                 }
-                if (startOfShipCol > order[i]) {
-                    endOfShipCol = startOfShipCol - order[i]
+                if (startOfShipCol > gameData.listOfBoatLength[i]) {
+                    endOfShipCol = startOfShipCol - gameData.listOfBoatLength[i]
                     endOfShipRow = startOfShipRow
                     stepIn = false
                     break
                 }
             }
             else {
-                if (9 - startOfShipRow > order[i]) {
-                    endOfShipRow = startOfShipRow + order[i]
+                if ((gameData.nrows - 1) - startOfShipRow > gameData.listOfBoatLength[i]) {
+                    endOfShipRow = startOfShipRow + gameData.listOfBoatLength[i]
                     endOfShipCol = startOfShipCol
                     stepIn = false
                     break
                 }
-                if (startOfShipRow > order[i]) {
-                    endOfShipRow = startOfShipRow - order[i]
+                if (startOfShipRow > gameData.listOfBoatLength[i]) {
+                    endOfShipRow = startOfShipRow - gameData.listOfBoatLength[i]
                     endOfShipCol = startOfShipCol
                     stepIn = false
                     break
@@ -151,7 +179,7 @@ function generateBoat() {
         }
         console.log(startOfShipRow, startOfShipCol, endOfShipRow, endOfShipCol)
         // létrehozom a kezdő és végcella közötti cellákat, a hajók hosszának megfelelően
-        temporaryBoat = generateShipFromStartAndEnd(order[i], startOfShipRow, startOfShipCol, endOfShipRow, endOfShipCol)
+        temporaryBoat = generateShipFromStartAndEnd(gameData.listOfBoatLength[i], startOfShipRow, startOfShipCol, endOfShipRow, endOfShipCol)
         console.log(temporaryBoat)
         // itt azt vizsgálom, hogy az ideiglenes hajóm valakivel közös cellát foglal-e
         // Ha nem, akkor belerakom a végső listámba
@@ -325,7 +353,9 @@ function startGame(nrows, ncols, maxSteps) {
     gameData.nrows = nrows
     gameData.ncols = ncols
     gameData.maxlepes = maxSteps
+    gameData.listOfBoatLength = generateBoatLength(nrows,ncols)
     gameData.boats = generateBoat()
+    
     gameData.matrix = generateMatrix(gameData.boats, nrows, ncols)
     generateGameArea(gameData.matrix)
 
