@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    canvas{
+        border: 1px solid black;
+    }
+    td{
+        width: 50px;
+        height: 50px;
+        border: 5px solid black;
+    }
+    .black{background-color: black;}
+    .blue{background-color: blue;}
+    .red{background-color: red;}
+    .green{background-color: green;}
+    .selected{
+        border: 5px solid rgb(255, 0, 191)
+    }
+</style>
+<body>
+    <table>
+        <tr id="colors">
+            <td data-color="black" class="black selected"></td>
+            <td data-color="blue" class="blue"></td>
+            <td data-color="red" class="red"></td>
+            <td data-color="green" class="green"></td>
+        </tr>
+        <tr id="widths">
+            <td data-width="1" class="selected">1px</td>
+            <td data-width="5">5px</td>
+            <td data-width="10">10px</td>
+            <td data-width="20">20px</td>
+        </tr>
+    </table>
+    <canvas width="1000" height="1000"></canvas>
+    <script src="8.ora.js"></script>
+</body>
+</html>
