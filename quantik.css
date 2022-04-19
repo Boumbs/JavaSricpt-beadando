@@ -1,0 +1,56 @@
+#table tr td {
+    border-radius: 5px;
+    border: 5px solid aqua;
+    
+    width: 150px;
+    height: 150px;
+    
+    background-color: azure;
+    margin: 5px;
+    
+}
+
+#table {
+    text-align: left;
+    margin-top: 40px;
+}
+
+#gameChanger td {
+    text-align: center;
+}
+
+#shapes {
+    margin-top: 100px;
+    margin-left: 100px;
+    text-align: center;
+    background-color: beige;
+}
+
+#shapes td {
+    height: 100px;
+    width: 100px;
+}
+body {
+    background-color: #f4f4f4;
+}
+
+.fill {
+    border: solid;
+}
+
+.hold {
+    border: solid #ccc 4px;
+}
+
+.hovered {
+    border: black 2px dashed !important;
+    /* ezt nem értem ezt meg kell kérdezni */
+}
+
+.invisible {
+    display: none;
+}
+
+.zero {
+      border: 5px red;  
+}

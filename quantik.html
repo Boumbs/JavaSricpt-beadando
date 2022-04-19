@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="hu">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quantik game</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link rel="stylesheet" href="quantik.css">
+</head>
+
+<body>
+    <div id="startPage">
+        <h1>Quantik Game</h1>
+        <h3>Az örömteli szórakozás</h3>
+        <p>
+            <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                A játékleírást a gombra kattintva megtekintheti
+            </button>
+          </p>
+          <div class="collapse" id="collapseExample">
+            <div class="card card-body">
+             Játékleíráss......................................
+            </div>
+          </div>
+        <form>
+            <div class="mb-3">
+              <label for="1.jatekos" class="form-label">Megadhatod a 1. Játékos nevét</label>
+              <input type="text" maxlength="100px" class="form-control" id="1.jatekos" value="1.Játékos" >
+              
+            </div>
+            <div class="mb-3">
+              <label for="2.jatekos" class="form-label">Megadhatod a 2. Játékos nevét</label>
+              <input type="text" class="form-control" id="2.jatekos" value="2.Játékos">
+            </div>
+            
+            <button type="button" id="button" class="btn btn-primary">Játék kezdése</button>
+          </form>
+    </div>
+
+    <div hidden  id="gameArea">
+        <div class="container">
+            <div class="row">
+                <div id="table" class="col">
+
+                </div>
+                <div class="col">
+                    <div id="gameChanger">
+                        <div class="row">
+                            <table>
+                                <tr>
+                                    <td>
+                                        <img id="egyes" src="kepek/babujo.png" alt="babu">
+                                        <h2>1.Játékos</h2>
+                                    </td>
+                                    <td id="vs">
+                                        <h3>vs</h3>
+                                    </td>
+                                    <td>
+                                        <img id="kettes" src="kepek/babujo.png" alt="babu">
+                                        <h2>2.Játékos</h2>
+                                    </td>
+                                </tr>
+                            </table>
+
+                        </div>
+                    </div>
+                    <div id="shapes">
+                        <table>
+                            <tr id="első">
+                                <td>
+                                    <h3>1.Játékos</h3>
+                                    
+                                </td>
+                                <td>
+                                    <img class="fill" src="kepek/piros_negyzet.png" draggable="true" value="square" alt="piros negyzet">
+                                    <span>2</span>
+                                    
+                                </td>
+                                <td>
+                                    <img class="fill" src="kepek/piros_kor.png" draggable="true" value="circle" alt="piros kör">
+                                    <span>2</span>
+                                </td>
+                                <td>
+                                    <img class="fill" src="kepek/piros_haromszog.png" draggable="true" value="triangle" alt="piros haromszög">
+                                    <span>2</span>
+                                </td>
+                                <td>
+                                   <img class="fill" src="kepek/piros_csillag.png" draggable="true" value="star" alt="piros csillag">
+                                   <span>2</span>
+                                </td>
+                            </tr>
+                            <tr id="második"> 
+                                <td>
+                                    <h3>2.Játékos</h3>
+                                </td>
+                                <td>
+                                    <img class="fill" src="kepek/zold_negyzet.png" draggable="true" value="square" alt="zöld négyzet">
+                                    <span>2</span>
+                                </td>
+                                <td>
+                                    <img class="fill" src="kepek/zold_kor.png" draggable="true" value="circle" alt="zold kör">
+                                    <span>2</span>
+                                </td>
+                                <td>
+                                    <img class="fill" src="kepek/zold_haromszog.png" draggable="true" value="triangle" alt="zöld háromszög">
+                                    <span>2</span>
+                                </td>
+                                <td>
+                                   <img class="fill" src="kepek/zold_csillag.png" draggable="true" value="star" alt="zöld csillag"> 
+                                   <span>2</span>
+                                </td>
+                            </tr>
+
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+
+    <script src="quantik.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>
