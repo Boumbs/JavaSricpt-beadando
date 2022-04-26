@@ -32,21 +32,22 @@ function drawTable() {
 }
 
 
-drawTable()
-
-let temp;
-const empties = document.querySelectorAll('.empty')
 
 
 
 
 
 
-delegate(shapes, 'td', 'dragstart', (event, target) => {
-    target.className += " hold"
-    temp = target.innerHTML
 
-    console.log(target.child)
+
+
+
+delegate(shapes, 'img', 'dragstart', (event, target) => {
+    target.className = " hold"
+    gameData.tempSrc = target.src
+    gameData.tempValue = target.dataset.shape
+
+
 
 
     //Itt kéne:
@@ -57,7 +58,12 @@ delegate(shapes, 'td', 'dragstart', (event, target) => {
 
 })
 delegate(shapes, 'img', 'dragend', (event, target) => {
-    target.className = "fill"
+    if (target.nextElementSibling.innerText!="0") {
+    target.className = " fill"
+    }
+    else {
+        target.className= "zero"
+    }
 
 })
 
@@ -69,24 +75,36 @@ delegate(gameTable, 'td', 'dragover', (event, target) => {
 })
 
 delegate(gameTable, 'td', 'dragenter', (event, target) => {
-    event.preventDefault()
-    target.className = "hovered"
-    console.log("enter")
+    if (possiblePlace(target.dataset.row, target.dataset.col)) {
+        event.preventDefault()
+        target.className = " hovered"
+        console.log("enter")
+    }
 })
 
 delegate(gameTable, 'td', 'dragleave', (event, target) => {
-    target.className = "empty"
+    target.className = " empty"
     console.log("leave")
 })
 delegate(gameTable, 'td', 'drop', (event, target) => {
-    if (target.className == "hovered") {
-        console.log('true')
-        target.className = "empty"
-        target.innerHTML = temp
+    if (possiblePlace(target.dataset.row, target.dataset.col)) {
+        target.appendChild(makeImg())
+        target.className = " fill"
+        putValues(target.dataset.row, target.dataset.col)
+        shapesCounter()
+        gameStepper()
     }
-    //target.firstChildElement.setAttribute('draggable','false')
-    console.log(target.childElement)
 })
+
+function makeImg(td) {
+    let img = document.createElement('img')
+    img.src = gameData.tempSrc
+    img.setAttribute('draggable', 'false')
+    return img
+}
+
+
+
 
 
 
@@ -108,24 +126,27 @@ const gameData = {
     rows: [
         [],
         [],
-        [1, 2, 3],
+        [],
         []
     ],
     cols: [
         [],
-        [1, 2, 3],
+        [],
         [],
         []
     ],
     squers: [
         [],
         [],
-        [1, 2, 3],
+        [],
         []
     ],
-    tempValue: "square",
+    tempValue: "",
     tempIndex: [2, 1],
-    tempPlayer: "első"
+    tempPlayer: "első",
+    tempSrc: 0,
+    temp1Name: "",
+    temp2Name: ""
 }
 
 function checkSome(x) {
@@ -158,8 +179,8 @@ function possiblePlace(x, y) {
 }
 
 function putValues(x, y) {
-    gameData.tempIndex.push(x)
-    gameData.tempIndex.push(y)
+    gameData.tempIndex[0] = x
+    gameData.tempIndex[1] = y
     gameData.rows[x].push(gameData.tempValue)
     gameData.cols[y].push(gameData.tempValue)
     if ((x == 0 || x == 1) && (y == 0 || y == 1)) {
@@ -177,6 +198,7 @@ function putValues(x, y) {
 }
 
 function checkWin(x, y) {
+    console.log("win")
     const row = gameData.rows[x].length == 4
     const col = gameData.cols[y].length == 4
     let squer
@@ -203,8 +225,12 @@ function checkWin(x, y) {
 
 function gameStepper() {
     if (checkWin(gameData.tempIndex[0], gameData.tempIndex[1])) {
-        alert(`A ${gameData.tempPlayer} játékos nyert`)
-        //vissza a kezdőképernyőre  funkció
+        if (gameData.tempPlayer == "első") {
+            alert(`${gameData.temp1Name} győzőtt! Gratulálunk`)
+        }
+        else {
+            alert(`${gameData.temp2Name} győzőtt! Gratulálunk`)
+        }
         endGame()
     }
     else {
@@ -228,7 +254,7 @@ function gameStepper() {
             disableDraggable()
         }
 
-        
+
     }
 
 }
@@ -245,8 +271,10 @@ function shapesCounter() {
             num -= 1
             span.innerText = num
             console.log("lehetetlenítés")
-            getImg().setAttribute('draggable', 'false')
-            getImg().className = "zero"
+            img=getImg()
+            console.log(img)
+            //img.setAttribute('draggable', 'false')
+            img.classList.add('zero')
 
         }
     }
@@ -272,7 +300,7 @@ function enableDraggable() {
 }
 
 function getImg() {
-    return shapes.querySelector(`#${gameData.tempPlayer} img[value="${gameData.tempValue}"]`)
+    return shapes.querySelector(`#${gameData.tempPlayer} img[data-shape="${gameData.tempValue}"]`)
 }
 
 function getOtherPlayerShapes() {
@@ -287,40 +315,72 @@ function getOtherPlayerShapes() {
 }
 
 const button = startPage.querySelector('#button')
-button.addEventListener('click',startGame)
+button.addEventListener('click', startGame)
 
 function startGame() {
-    startPage.setAttribute('hidden','true')
+    startPage.setAttribute('hidden', 'true')
     gameArea.removeAttribute('hidden')
     drawTable()
+    settingNames()
     const player = gameChanger.querySelector('#egyes')
     player.src = "kepek/babu-piros.png"
-    gameData.tempIndex=[2,1]
-    gameData.tempValue=""
-    gameData.tempPlayer="első"
+    gameData.tempIndex = [0, 0]
+    gameData.tempValue = ""
+    gameData.tempPlayer = "első"
     disableDraggable()
 }
 
 function endGame() {
     startPage.removeAttribute('hidden')
-    gameArea.setAttribute('hidden','true')
+    gameArea.setAttribute('hidden', 'true')
     for (img of gameChanger.querySelectorAll('img')) {
-        img.src="kepek/babujo.png"
+        img.src = "kepek/babujo.png"
     }
     for (x of gameData.cols) {
-        x=[]
+        x.length = 0
     }
-    for (x of gameData.rows) {
-        x=[]
+    for (z of gameData.rows) {
+        z.length = 0
     }
-    for (x of gameData.squers) {
-        x=[]
+    for (k of gameData.squers) {
+
+        k.length = 0
     }
     for (shape of shapes.querySelectorAll('#shapes img')) {
-        shape.setAttribute('draggable','true')
-        shape.nextElementSibling.innerText=2
+        shape.setAttribute('draggable', 'true')
+        shape.nextElementSibling.innerText = 2
     }
+    gameTable.innerText = ""
+    settingBackNames()
 
+
+}
+
+function settingNames() {
+    const elso = startPage.querySelector("#elso")
+    const masodik = startPage.querySelector("#masodik")
+
+    const nev1 = gameChanger.querySelector('#egyes').nextElementSibling
+    const nev2 = gameChanger.querySelector('#kettes').nextElementSibling
+
+    const h31 = shapes.querySelector('#első h3')
+    const h32 = shapes.querySelector('#második h3')
+
+    nev1.innerText = elso.value
+    nev2.innerText = masodik.value
+    gameData.temp1Name = elso.value
+    gameData.temp2Name = masodik.value
+    h31.innerText=elso.value
+    h32.innerText=masodik.value
+
+}
+
+function settingBackNames() {
+    const elso = startPage.querySelector("#elso")
+    const masodik = startPage.querySelector("#masodik")
+
+    elso.value = "1.Játékos"
+    masodik.value = "2.Játékos"
 }
 
 //Beírok mindent

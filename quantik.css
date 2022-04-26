@@ -1,12 +1,10 @@
 #table tr td {
-    border-radius: 5px;
-    border: 5px solid aqua;
+    
     
     width: 150px;
     height: 150px;
     
-    background-color: azure;
-    margin: 5px;
+    border: solid #f4f4f4 5px;
     
 }
 
@@ -23,7 +21,7 @@
     margin-top: 100px;
     margin-left: 100px;
     text-align: center;
-    background-color: beige;
+    
 }
 
 #shapes td {
@@ -35,7 +33,7 @@ body {
 }
 
 .fill {
-    border: solid;
+    text-align: center;
 }
 
 .hold {
@@ -43,14 +41,12 @@ body {
 }
 
 .hovered {
-    border: black 2px dashed !important;
+    border: dashed black 5px !important;
     /* ezt nem értem ezt meg kell kérdezni */
 }
 
-.invisible {
-    display: none;
-}
+
 
 .zero {
-      border: 5px red;  
+    border: solid red 5px;  
 }
