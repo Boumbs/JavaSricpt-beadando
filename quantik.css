@@ -1,10 +1,11 @@
-#table tr td {
+#table td {
     
     
     width: 150px;
     height: 150px;
     
     border: solid #f4f4f4 5px;
+    border-collapse: collapse;
     
 }
 

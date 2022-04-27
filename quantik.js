@@ -59,7 +59,7 @@ delegate(shapes, 'img', 'dragstart', (event, target) => {
 })
 delegate(shapes, 'img', 'dragend', (event, target) => {
     if (target.nextElementSibling.innerText!="0") {
-    target.className = " fill"
+    target.className = "fill"
     }
     else {
         target.className= "zero"
@@ -77,22 +77,23 @@ delegate(gameTable, 'td', 'dragover', (event, target) => {
 delegate(gameTable, 'td', 'dragenter', (event, target) => {
     if (possiblePlace(target.dataset.row, target.dataset.col)) {
         event.preventDefault()
-        target.className = " hovered"
+        target.className = "hovered"
         console.log("enter")
     }
 })
 
 delegate(gameTable, 'td', 'dragleave', (event, target) => {
-    target.className = " empty"
+    target.className = "empty"
     console.log("leave")
 })
 delegate(gameTable, 'td', 'drop', (event, target) => {
     if (possiblePlace(target.dataset.row, target.dataset.col)) {
         target.appendChild(makeImg())
-        target.className = " fill"
+        target.className = "fill"
         putValues(target.dataset.row, target.dataset.col)
         shapesCounter()
-        gameStepper()
+        setTimeout(
+        gameStepper,0)
     }
 })
 
@@ -226,10 +227,17 @@ function checkWin(x, y) {
 function gameStepper() {
     if (checkWin(gameData.tempIndex[0], gameData.tempIndex[1])) {
         if (gameData.tempPlayer == "első") {
-            alert(`${gameData.temp1Name} győzőtt! Gratulálunk`)
+            setTimeout(
+                ()=>alert(`${gameData.temp1Name} győzőtt! Gratulálunk`),
+                0
+            )
+            
         }
         else {
-            alert(`${gameData.temp2Name} győzőtt! Gratulálunk`)
+            setTimeout(
+                () =>  alert(`${gameData.temp2Name} győzőtt! Gratulálunk`),
+                0);
+           
         }
         endGame()
     }
